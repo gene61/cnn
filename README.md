@@ -14,7 +14,8 @@ Simulated flying trajectories passing through one transmission path (solid black
 #### Run single simulation
 python diffraction_modell.py
 
-example output: <img width="264" height="267" alt="image" src="https://github.com/user-attachments/assets/91f3feb5-de79-471e-b9c6-04e5c460c3f4" />
+example outputs:
+<img width="264" height="267" alt="image" src="https://github.com/user-attachments/assets/91f3feb5-de79-471e-b9c6-04e5c460c3f4" />
 <img width="264" height="267" alt="image" src="https://github.com/user-attachments/assets/30ac4ac3-8268-4737-849d-8e6b30444f9c" />
 <img width="264" height="267" alt="image" src="https://github.com/user-attachments/assets/2c580811-ec98-476c-8d82-87917f8ee009" />
 
