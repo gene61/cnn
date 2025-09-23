@@ -1,7 +1,8 @@
 # Diffraction Pattern Modeling and CNN Classification
 
-A machine learning pipeline for generating synthetic diffraction patterns received at ground receiver when a flying obejct travel pass a satellite-ground_receiver link and training convolutional neural networks for pattern classification and analysis.
+The system models satellite-to-ground communication links (represented by black lines) where flying objects (simulated as green slabs) pass through the transmission path, creating detectable diffraction patterns at the ground receiver.
 <img width="1153" height="424" alt="image" src="https://github.com/user-attachments/assets/2cb21cfa-1f51-4a4c-b791-8d9ee98135fb" />
+Simulated flying trajectories passing through transmission path:
 <img width="815" height="413" alt="image" src="https://github.com/user-attachments/assets/55c8a673-bf57-4ec1-ab99-53f5ac210551" />
 
 
