@@ -6,10 +6,10 @@ A machine learning pipeline for generating synthetic diffraction patterns and tr
 
 ### 1. Generate Diffraction Patterns
 
-# Run single simulation
+#### Run single simulation
 python diffraction_modell.py
 
-# Run batch simulations
+#### Run batch simulations
 ./run_simulations.sh
 
 ### 2. Train CNN Model
