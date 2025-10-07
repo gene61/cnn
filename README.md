@@ -1,7 +1,5 @@
 # Diffraction Pattern Modeling and CNN Classification
 
-The system models satellite-to-ground communication links (represented by black lines) where flying objects (simulated as green slabs) pass through the transmission path, creating detectable diffraction patterns at the ground receiver.
-Simulated flying trajectories passing through one transmission path (solid black line):
 
 
 
