@@ -1,4 +1,7 @@
 import numpy as np
+import matplotlib
+# Use non-interactive backend to avoid display issues
+matplotlib.use('Agg')  # Must be set before importing pyplot
 import matplotlib.pyplot as plt
 import argparse
 from mpl_toolkits.mplot3d import Axes3D  # Import for 3D plotting
@@ -9,7 +12,8 @@ FLYING_OBJECTS = {
         'fligh_height': np.round(np.random.uniform(60, 130), 2),  # Random height within range (2 decimal places)
         'width': np.round(np.random.uniform(0.2, 0.22), 2),       # width of the drone (2 decimal places)
         'length': np.round(np.random.uniform(0.24, 0.26), 2),      # length of the drone (2 decimal places)
-        'speed_range': (2, 20),         # speed range in m/s
+        # 'speed_range': (2, 20),         # speed range in m/s
+        'speed_range': (8, 12),         # speed range in m/s
         'radius_detection': 12,           # detection radius from link
         'time_range': 40,                # time range from -40s to 40s
         'num_data_points' : 5000       #  data points per unit time
@@ -18,7 +22,8 @@ FLYING_OBJECTS = {
         'fligh_height': np.round(np.random.uniform(60, 130), 2),  
         'width': np.round(np.random.uniform(0.1, 0.13), 2),    
         'length': np.round(np.random.uniform(0.14, 0.17), 2),    
-        'speed_range': (2, 20),     
+        # 'speed_range': (2, 20),    
+        'speed_range': (2, 6),     
         'radius_detection': 7,           
         'time_range': 40,                 
         'num_data_points' : 5000      
@@ -27,7 +32,8 @@ FLYING_OBJECTS = {
         'fligh_height': np.round(np.random.uniform(60, 130), 2),  
         'width': np.round(np.random.uniform(0.32, 0.35), 2),       
         'length': np.round(np.random.uniform(0.37, 0.45), 2),    
-        'speed_range': (2, 20),     
+        # 'speed_range': (2, 20),  
+        'speed_range': (14, 20),        
         'radius_detection': 17,          
         'time_range': 40,                 
         'num_data_points' : 5000      
@@ -78,7 +84,6 @@ D_Sat = np.random.choice([-1, 1])  # Random direction of satellite
 D_vertical = np.random.choice([-1, 1])  # flying object vertical movement direction
 a_prime = obj_specs['width']  # Use width of selected flying object
 b_prime = obj_specs['length']  # Use length of selected flying object
-# antenna_aperture = 0.05 * 0.05  # m^2
 x0 = np.random.uniform(-obj_specs['radius_detection'], obj_specs['radius_detection'])   # x coordinate of the flying object when t=0s            
 ''' determine flying object's speed randomly in x, y ,z direction'''
 while True:
@@ -225,7 +230,7 @@ for i, time in enumerate(t):
     b = b_prime
 
     # Update x position
-    x = x0 + speed_x * time            #incoporate aperture along x axis
+    x = x0 + speed_x * time            
     # x_values[i] = x
     distances[i] = np.sqrt(x**2 + y_L**2)
 
@@ -235,32 +240,27 @@ for i, time in enumerate(t):
     # x1_values[i] = x1
     # y1_values[i] = y1
     
-    # Create grid for aperture integration (-0.1m to 0.1m around center)
-    grid_points = np.linspace(-0.05, 0.05, 3)  
-    I_z_sum = 0
-    count = 0
-    for dx in grid_points:
-        for dy in grid_points:
-            # Calculate coordinates for this grid point
-            x1_grid = x1 + dx
-            y1_grid = y1 + dy
-            # Compute signal intensity at grid point. incoporate noise.
-            beta = np.pi * a * x1_grid / (wavelength * z)
-            gamma = np.pi * b * y1_grid / (wavelength * z)
-            C = (a * b) / (wavelength * z) * np.sinc(beta / np.pi) * np.sinc(gamma / np.pi)
-            phi = (k * (x1_grid**2 + y1_grid**2 + 2 * z**2)) / (2 * z)
-            sigma_n = A_mag / np.sqrt(SNR_linear)
-            n_r = np.random.normal(0, sigma_n/np.sqrt(2))
-            n_i = np.random.normal(0, sigma_n/np.sqrt(2))
-            n = n_r + 1j * n_i
-            I_z_point = (
-                np.abs(A)**2 * (1 + C**2 - 2 * C * np.sin(phi)) 
-                + (n_r**2 + n_i**2)
-                + 2 * np.real(A * (1 + 1j * C * np.exp(1j * phi)) * np.conj(n))
-            )
-            I_z_sum += I_z_point
-            count += 1
-    I_z = I_z_sum / count    # Calculate average intensity over aperture
+    # Use single point at (0,0) for aperture integration
+    dx = 0
+    dy = 0
+    
+    # Calculate coordinates for this single point
+    x1_grid = x1 + dx
+    y1_grid = y1 + dy
+    # Compute signal intensity at single point. incoporate noise.
+    beta = np.pi * a * x1_grid / (wavelength * z)
+    gamma = np.pi * b * y1_grid / (wavelength * z)
+    C = (a * b) / (wavelength * z) * np.sinc(beta / np.pi) * np.sinc(gamma / np.pi)
+    phi = (k * (x1_grid**2 + y1_grid**2 + 2 * z**2)) / (2 * z)
+    sigma_n = A_mag / np.sqrt(SNR_linear)
+    n_r = np.random.normal(0, sigma_n/np.sqrt(2))
+    n_i = np.random.normal(0, sigma_n/np.sqrt(2))
+    n = n_r + 1j * n_i
+    I_z = (
+        np.abs(A)**2 * (1 + C**2 - 2 * C * np.sin(phi)) 
+        + (n_r**2 + n_i**2)
+        + 2 * np.real(A * (1 + 1j * C * np.exp(1j * phi)) * np.conj(n))
+    )
 
     
     # Equation 8: Calculate measured intensity with free space path losss
